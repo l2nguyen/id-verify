@@ -1,0 +1,72 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - $chat_start
+
+actions:
+  - action_start_convo
+
+responses:
+  utter_greet:
+  - text: "Hey! How are you?"
+
+  utter_cheer_up:
+  - text: "Here is something to cheer you up:"
+    image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+  - text: "Did that help you?"
+
+  utter_happy:
+  - text: "Great, carry on!"
+
+  utter_goodbye:
+  - text: "Bye"
+
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  utter_ask_init_message:
+  - text: "hello, how can I help you?"
+
+  utter_ask_ds_state_ic:
+  - text: "Before I can help you, do you agree to our data privacy policy?"
+
+  utter_cannot_help:
+  - text: "Sorry, I am unable help you with this if you do not agree to the data privacy policy"
+
+slots:
+  init_message:
+    type: text
+    mappings:
+    - type: from_text
+      not_intent: $chat_start
+    influence_conversation: false
+
+  ds_state_ic:
+    type: bool
+    influence_conversation: true
+    mappings:
+    - type: from_intent
+      value: true
+      intent: affirm
+    - type: from_intent
+      value: false
+      intent: deny
+
+forms:
+  ds_form:
+    required_slots:
+      - init_message
+      - ds_state_ic
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
